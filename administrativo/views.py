@@ -16,7 +16,10 @@ def index(request):
     estudiantes = Estudiante.objects.prefetch_related('lasmatriculas__modulo')
 
     # Llama al método del modelo para obtener el resumen de cada estudiante
-    resumen_estudiantes = [estudiante.resumen_matriculas() for estudiante in estudiantes]
+    resumen_estudiantes = []
+    for estudiante in estudiantes:
+        resumen = estudiante.resumen_matriculas()
+        resumen_estudiantes.append(resumen)
 
     # Prepara el contexto para enviar a la plantilla
     contexto = {
