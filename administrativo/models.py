@@ -26,8 +26,27 @@ class Estudiante(models.Model):
 
     def obtener_matriculas(self):
         return self.lasmatriculas.all()
-        
 
+    def resumen_matriculas(self):
+        """
+        Devuelve un resumen con los módulos en los que el estudiante está inscrito,
+        incluyendo los nombres de los módulos y el costo total.
+        """
+        modulos = []  # Lista para guardar (nombre del módulo, costo)
+        total = 0     # Acumulador del costo total
+
+        # Recorre todas las matrículas del estudiante, incluyendo los datos del módulo relacionado
+        for matricula in self.lasmatriculas.select_related('modulo'):
+            modulos.append((matricula.modulo.nombre, matricula.modulo.costo))
+            total += matricula.modulo.costo
+
+        # Devuelve un diccionario con toda la información resumida
+        return {
+            'estudiante': self,
+            'modulos': modulos,
+            'total': total
+        }   
+        
 class Modulo(models.Model):
     """
     """

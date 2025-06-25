@@ -12,38 +12,22 @@ from administrativo.forms import MatriculaForm, MatriculaEditForm
 # el nombre de la vista es index.
 
 def index(request):
-    matriculas = Matricula.objects.all()
+    # Obtiene todos los estudiantes y pre-carga sus módulos matriculados para optimizar las consultas
+    estudiantes = Estudiante.objects.prefetch_related('lasmatriculas__modulo')
 
-    titulo = "Listado de matriculas"
+    # Llama al método del modelo para obtener el resumen de cada estudiante
+    resumen_estudiantes = [estudiante.resumen_matriculas() for estudiante in estudiantes]
 
-    # Estudiantes, módulo y costo
-    matriculas = Matricula.objects.select_related('estudiante', 'modulo')
-    estudiantes = Estudiante.objects.all()
-
-    resumen_estudiantes = []
-    for estudiante in estudiantes:
-        matriculas_est = Matricula.objects.filter(estudiante=estudiante).select_related('modulo')
-        modulos = []
-        total = 0
-        for m in matriculas_est:
-            modulos.append((m.modulo.nombre, m.modulo.costo))
-            total += m.modulo.costo
-        resumen_estudiantes.append({
-            'estudiante': estudiante,
-            'modulos': modulos,
-            'total': total
-        })
-
+    # Prepara el contexto para enviar a la plantilla
     contexto = {
-        'matriculas': matriculas,
-        'resumen_estudiantes': resumen_estudiantes,
-        'numero_matriculas': len(matriculas),
-        'mititulo': titulo
+        'matriculas': Matricula.objects.select_related('estudiante', 'modulo'),  # Lista de todas las matrículas
+        'resumen_estudiantes': resumen_estudiantes,                              # Datos agregados por estudiante
+        'numero_matriculas': Matricula.objects.count(),                          # Número total de matrículas
+        'mititulo': "Listado de matrículas"                                      # Título para la vista
     }
 
+    # Renderiza la plantilla con el contexto
     return render(request, 'index.html', contexto)
-
-
 
 def detalle_matricula(request, id):
     """
