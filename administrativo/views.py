@@ -12,14 +12,11 @@ from administrativo.forms import MatriculaForm, MatriculaEditForm
 # el nombre de la vista es index.
 
 def index(request):
-    """
-    """
     matriculas = Matricula.objects.all()
 
     titulo = "Listado de matriculas"
-    informacion_template = {'matriculas': matriculas,'numero_matriculas': len(matriculas), 'mititulo': titulo}
 
-    #Estudiantes, modulo y costo
+    # Estudiantes, módulo y costo
     matriculas = Matricula.objects.select_related('estudiante', 'modulo')
     estudiantes = Estudiante.objects.all()
 
@@ -41,10 +38,11 @@ def index(request):
         'matriculas': matriculas,
         'resumen_estudiantes': resumen_estudiantes,
         'numero_matriculas': len(matriculas),
-        'mititulo': "Listado de matrículas"
+        'mititulo': titulo
     }
 
-    return render(request, 'index.html', informacion_template,contexto)
+    return render(request, 'index.html', contexto)
+
 
 
 def detalle_matricula(request, id):

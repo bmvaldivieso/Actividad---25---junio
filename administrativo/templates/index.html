@@ -32,14 +32,14 @@
 </table>
 
 <hr>
-<h3>Resumen de estudiantes</h3>
+<h3>Lista de estudiantes</h3>
 <table border="1px">
   <tr>
     <th>Nombre</th>
     <th>Apellido</th>
     <th>Tipo</th>
     <th>Edad</th>
-    <th>Matrículas (módulo + costo)</th>
+    <th>Matrículas</th>
   </tr>
   {% for item in resumen_estudiantes %}
   <tr>
@@ -50,10 +50,10 @@
     <td>
       <ul>
         {% for modulo, costo in item.modulos %}
-          <li>{{ modulo }} — ${{ costo }}</li>
+          <li>Modulo {{ modulo }} — Costo ${{ costo }}</li>
         {% endfor %}
       </ul>
-      <strong>Total:</strong> ${{ item.total|floatformat:2 }}
+      <strong>Costo Total:</strong> ${{ item.total|floatformat:2 }}
     </td>
   </tr>
   {% endfor %}
